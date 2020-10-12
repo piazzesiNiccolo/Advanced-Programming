@@ -23,3 +23,6 @@
 hs_err_pid*
 /beans_reflection_annotations/target/
 /ex3/target/
+/esercizio3/target/
+/.metadata/
+/esercizio3/bin/target/
