@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mycompany.beans_reflection_annotations;
+package com.mycompany.ex4;
 
 import java.beans.*;
 import java.io.Serializable;
