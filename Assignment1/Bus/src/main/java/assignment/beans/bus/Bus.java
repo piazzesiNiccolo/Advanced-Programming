@@ -27,6 +27,7 @@ public class Bus implements Serializable {
     private int numPassengers;
 
     private PropertyChangeSupport propertySupport;
+    private VetoableChangeSupport vetos = new VetoableChangeSupport(this);
 
     public Bus() {
         capacity = 50;
@@ -49,11 +50,7 @@ public class Bus implements Serializable {
         }
     }
 
-    public void setCapacity(int capacity) {
-        int oldCapacity = this.capacity;
-        this.capacity = capacity;
-        propertySupport.firePropertyChange(PROP_CAPACITY, oldCapacity, this.capacity);
-    }
+    
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         propertySupport.addPropertyChangeListener(listener);
@@ -61,6 +58,48 @@ public class Bus implements Serializable {
 
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertySupport.removePropertyChangeListener(listener);
+    }
+    
+    public void addVetoableChangeListener(VetoableChangeListener l){
+        vetos.addVetoableChangeListener(l);
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
+    public boolean isDoorOpen() {
+        
+        return doorOpen;
+    }
+
+    public void setDoorOpen(boolean doorOpen) {
+        boolean oldDoorOpen = this.doorOpen;
+        this.doorOpen = doorOpen;
+        propertySupport.firePropertyChange(PROP_DOOROPEN, oldDoorOpen, doorOpen);
+    }
+
+    public int getNumPassengers() {
+        return numPassengers;
+    }
+
+    public void setNumPassengers(int numPassengers) {
+        int oldNumPassengers = this.numPassengers;
+        try {
+            vetos.fireVetoableChange(PROP_NUMPASSENGERS,oldNumPassengers,numPassengers);
+            this.numPassengers = numPassengers;
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(Bus.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        this.numPassengers = numPassengers;
+    }
+    
+    public void removeVetoableChangeListener(VetoableChangeListener l){
+        vetos.removeVetoableChangeListener(l);
     }
 
 }
