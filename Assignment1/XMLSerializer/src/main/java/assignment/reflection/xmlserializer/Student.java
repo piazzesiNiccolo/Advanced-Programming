@@ -15,7 +15,7 @@ public class Student {
     @XMLfield(type = "String")
     public String firstName;
 
-    @XMLfield(type = "String")
+    @XMLfield(type = "String",name= "surname")
     public String lastName;
 
     @XMLfield(type = "int")

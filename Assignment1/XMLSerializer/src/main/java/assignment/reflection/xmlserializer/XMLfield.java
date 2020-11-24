@@ -20,6 +20,6 @@ public @interface XMLfield {
 
     String type();
 
-    String name() default " ";
+    String name() default "";
 
 }

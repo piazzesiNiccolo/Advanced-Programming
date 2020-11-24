@@ -1,1 +1,15 @@
-ciao ciao ciao
+<Student>
+ <firstName type="String">Niccolò</firstName>
+ <surname type="String">Piazzesi</surname>
+ <age type="int">22</age>
+</Student>
+<Student>
+ <firstName type="String">Jane</firstName>
+ <surname type="String">Doe</surname>
+ <age type="int">42</age>
+</Student>
+<Student>
+ <firstName type="String">null</firstName>
+ <surname type="String">null</surname>
+ <age type="int">0</age>
+</Student>
