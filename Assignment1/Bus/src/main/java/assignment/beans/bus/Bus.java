@@ -8,6 +8,8 @@ package assignment.beans.bus;
 import java.beans.*;
 import java.io.Serializable;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,7 +22,7 @@ public class Bus implements Serializable {
     public static final String PROP_CAPACITY = "capacity";
     public static final String PROP_DOOROPEN = "doorOpen";
     public static final String PROP_NUMPASSENGERS = "numPassengers";
-    public static final int SLEEP = 6000;
+    private final Timer timer = new Timer();
 
     private int capacity;
     private boolean doorOpen;
@@ -36,32 +38,16 @@ public class Bus implements Serializable {
         propertySupport = new PropertyChangeSupport(this);
     }
 
-    public void activate() { 
+    public void activate() {
         Random r = new Random();
-        while (true) {
-            try {
-                Thread.sleep(SLEEP);
-                int decr = r.nextInt(numPassengers+1);
-                numPassengers -= decr;
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Bus.class.getName()).log(Level.SEVERE, null, ex);
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                int decr = r.nextInt(numPassengers + 1);
+                setNumPassengers(numPassengers - decr); //To change body of generated methods, choose Tools | Templates.
             }
-            
-        }
-    }
+        }, 0, 10000);
 
-    
-
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        propertySupport.addPropertyChangeListener(listener);
-    }
-
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        propertySupport.removePropertyChangeListener(listener);
-    }
-    
-    public void addVetoableChangeListener(VetoableChangeListener l){
-        vetos.addVetoableChangeListener(l);
     }
 
     public int getCapacity() {
@@ -73,7 +59,7 @@ public class Bus implements Serializable {
     }
 
     public boolean isDoorOpen() {
-        
+
         return doorOpen;
     }
 
@@ -90,15 +76,27 @@ public class Bus implements Serializable {
     public void setNumPassengers(int numPassengers) {
         int oldNumPassengers = this.numPassengers;
         try {
-            vetos.fireVetoableChange(PROP_NUMPASSENGERS,oldNumPassengers,numPassengers);
+            vetos.fireVetoableChange(PROP_NUMPASSENGERS, oldNumPassengers, numPassengers);
             this.numPassengers = numPassengers;
         } catch (PropertyVetoException ex) {
             Logger.getLogger(Bus.class.getName()).log(Level.SEVERE, null, ex);
         }
         this.numPassengers = numPassengers;
     }
-    
-    public void removeVetoableChangeListener(VetoableChangeListener l){
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        propertySupport.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        propertySupport.removePropertyChangeListener(listener);
+    }
+
+    public void addVetoableChangeListener(VetoableChangeListener l) {
+        vetos.addVetoableChangeListener(l);
+    }
+
+    public void removeVetoableChangeListener(VetoableChangeListener l) {
         vetos.removeVetoableChangeListener(l);
     }
 

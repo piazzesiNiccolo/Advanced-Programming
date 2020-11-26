@@ -8,14 +8,10 @@ package assignment.reflection.xmlserializer;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
+
 
 /**
  *
@@ -27,7 +23,7 @@ public class XMLSerializer {
         try {
             StringBuilder s = new StringBuilder();
             BufferedWriter w = new BufferedWriter(new FileWriter(fileName));
-            w.write("");
+            w.write("");//reset the file if not empty
             Class c = arr[0].getClass(); //we assume that every object is of the same class
             if (c.isAnnotationPresent(XMLable.class)) {
                 for (Object a : arr) {
@@ -37,9 +33,10 @@ public class XMLSerializer {
                     w.append(s.toString());
                     s.setLength(0);
                 }
+                w.flush();
+                w.close();
             }
-            w.flush();
-            w.close();
+
         } catch (IOException ex) {
             Logger.getLogger(XMLSerializer.class.getName()).log(Level.SEVERE, null, ex);
         }

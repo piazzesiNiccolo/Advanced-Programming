@@ -24,7 +24,7 @@ public class Main {
             Student s1 = new Student("Niccolò", "Piazzesi",22);
             Student s2 = new Student("Jane", "Doe", 42);
             Student s3 = new Student();
-            Student[] students = {s1,s2,s3};
+            Object[] students = {s1,s2,s3};
             XMLSerializer.serialize(students, "boh.xml");
         } catch (IllegalArgumentException | IllegalAccessException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
