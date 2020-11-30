@@ -49,7 +49,7 @@ public class XMLSerializer {
             f.setAccessible(true);
             XMLfield ann = f.getAnnotation(XMLfield.class);
             if (ann != null) {
-                s.append(" <");
+                s.append("\t<");
                 String s1 = ann.name().equals("") ? f.getName() : ann.name();
                 s.append(s1);
                 s.append(" type=");

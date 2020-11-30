@@ -1,0 +1,128 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package assignment.beans.busboard;
+
+import java.beans.*;
+import java.io.Serializable;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ *
+ * @author nicco
+ */
+public class Bus implements Serializable {
+
+    public static final String PROP_CAPACITY = "capacity";
+    public static final String PROP_DOOROPEN = "doorOpen";
+    public static final String PROP_NUMPASSENGERS = "numPassengers";
+    private final Timer timer = new Timer();
+
+    private int capacity;
+    private boolean doorOpen;
+    private int numPassengers;
+
+    private final PropertyChangeSupport propertySupport;
+    private final VetoableChangeSupport vetos;
+
+    public Bus() {
+        capacity = 50;
+        doorOpen = false;
+        numPassengers = 20;
+        propertySupport = new PropertyChangeSupport(this);
+        vetos = new VetoableChangeSupport(this);
+    }
+
+    public void activate() {
+        Random r = new Random();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+
+                try {
+                    int decr = r.nextInt(numPassengers + 1);
+                    
+                    setNumPassengers(numPassengers - decr);
+                    
+                    //To change body of generated methods, choose Tools | Templates.
+                } catch (PropertyVetoException ex) {
+                    Logger.getLogger(Bus.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }, 20000, 10000);
+
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
+    public boolean isDoorOpen() {
+
+        return doorOpen;
+    }
+
+    public void setDoorOpen(boolean doorOpen) {
+        boolean oldDoorOpen = this.doorOpen;
+        this.doorOpen = doorOpen;
+        propertySupport.firePropertyChange(PROP_DOOROPEN, oldDoorOpen, doorOpen);
+    }
+
+    public boolean getDoorOpen() {
+        return this.doorOpen;
+    }
+
+    public int getNumPassengers() {
+        return numPassengers;
+    }
+
+    public void setNumPassengers(int newNumPassengers) throws PropertyVetoException {
+        int oldNumPassengers = this.numPassengers;
+
+        if (newNumPassengers <= capacity) {
+            try {
+                vetos.fireVetoableChange(PROP_NUMPASSENGERS, oldNumPassengers, newNumPassengers);
+                setDoorOpen(true);
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        setDoorOpen(false);
+                        numPassengers = newNumPassengers;
+                        propertySupport.firePropertyChange(PROP_NUMPASSENGERS,oldNumPassengers, newNumPassengers);
+                    }
+                }, 2000);
+            } catch (PropertyVetoException ex) {
+                propertySupport.firePropertyChange(PROP_NUMPASSENGERS,numPassengers,oldNumPassengers);
+                throw ex;
+            }
+        }
+
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        propertySupport.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        propertySupport.removePropertyChangeListener(listener);
+    }
+
+    public void addVetoableChangeListener(VetoableChangeListener l) {
+        vetos.addVetoableChangeListener(l);
+    }
+
+    public void removeVetoableChangeListener(VetoableChangeListener l) {
+        vetos.removeVetoableChangeListener(l);
+    }
+
+}
