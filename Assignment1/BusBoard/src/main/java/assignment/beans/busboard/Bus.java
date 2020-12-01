@@ -10,8 +10,7 @@ import java.io.Serializable;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  *
@@ -45,14 +44,10 @@ public class Bus implements Serializable {
             @Override
             public void run() {
 
-                try {
+                if (numPassengers > 0) {
+
                     int decr = r.nextInt(numPassengers + 1);
-                    
                     setNumPassengers(numPassengers - decr);
-                    
-                    //To change body of generated methods, choose Tools | Templates.
-                } catch (PropertyVetoException ex) {
-                    Logger.getLogger(Bus.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }, 20000, 10000);
@@ -86,7 +81,7 @@ public class Bus implements Serializable {
         return numPassengers;
     }
 
-    public void setNumPassengers(int newNumPassengers) throws PropertyVetoException {
+    public void setNumPassengers(int newNumPassengers) {
         int oldNumPassengers = this.numPassengers;
 
         if (newNumPassengers <= capacity) {
@@ -98,12 +93,11 @@ public class Bus implements Serializable {
                     public void run() {
                         setDoorOpen(false);
                         numPassengers = newNumPassengers;
-                        propertySupport.firePropertyChange(PROP_NUMPASSENGERS,oldNumPassengers, newNumPassengers);
+                        propertySupport.firePropertyChange(PROP_NUMPASSENGERS, oldNumPassengers, newNumPassengers);
                     }
                 }, 2000);
             } catch (PropertyVetoException ex) {
-                propertySupport.firePropertyChange(PROP_NUMPASSENGERS,numPassengers,oldNumPassengers);
-                throw ex;
+                   
             }
         }
 

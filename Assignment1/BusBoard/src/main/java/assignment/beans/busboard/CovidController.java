@@ -18,11 +18,9 @@ public class CovidController implements Serializable, VetoableChangeListener {
 
     private int reducedCapacity;
 
-   
-
     public CovidController() {
         reducedCapacity = 25;
-       
+
     }
 
     public int getReducedCapacity() {
@@ -36,13 +34,11 @@ public class CovidController implements Serializable, VetoableChangeListener {
     @Override
     public void vetoableChange(PropertyChangeEvent ev) throws PropertyVetoException {
         if (ev.getPropertyName().equals(Bus.PROP_NUMPASSENGERS)) {
-            if ((Integer)ev.getNewValue() > reducedCapacity) {
-                throw new PropertyVetoException("Half capacity exceeded!", ev);
+            if ((Integer) ev.getNewValue() > reducedCapacity) {
+                throw new PropertyVetoException(PROP_REDUCED_CAPACITY, ev);
             }
         }
-//To change body of generated methods, choose Tools | Templates.
-    }
 
-    
+    }
 
 }
