@@ -11,7 +11,6 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-
 /**
  *
  * @author nicco
@@ -47,10 +46,13 @@ public class Bus implements Serializable {
                 if (numPassengers > 0) {
 
                     int decr = r.nextInt(numPassengers + 1);
-                    setNumPassengers(numPassengers - decr);
+                    if (decr > 0) // no need to update numPassengers if no passenger is exiting
+                    {
+                        setNumPassengers(numPassengers - decr);
+                    }
                 }
             }
-        }, 20000, 10000);
+        }, 30000, 10000);
 
     }
 
@@ -87,15 +89,16 @@ public class Bus implements Serializable {
         if (newNumPassengers <= capacity) {
             try {
                 vetos.fireVetoableChange(PROP_NUMPASSENGERS, oldNumPassengers, newNumPassengers);
+                numPassengers = newNumPassengers;
                 setDoorOpen(true);
                 timer.schedule(new TimerTask() {
                     @Override
                     public void run() {
                         setDoorOpen(false);
-                        numPassengers = newNumPassengers;
                         propertySupport.firePropertyChange(PROP_NUMPASSENGERS, oldNumPassengers, newNumPassengers);
                     }
-                }, 2000);
+                }, 3000);
+                //if the change is vetoed or the bus is at full capacity we do nothing
             } catch (PropertyVetoException ex) {
                    
             }

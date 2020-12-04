@@ -10,8 +10,6 @@ import java.io.Serializable;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -28,14 +26,15 @@ public class Bus implements Serializable {
     private boolean doorOpen;
     private int numPassengers;
 
-    private PropertyChangeSupport propertySupport;
-    private VetoableChangeSupport vetos = new VetoableChangeSupport(this);
+    private final PropertyChangeSupport propertySupport;
+    private final VetoableChangeSupport vetos;
 
     public Bus() {
         capacity = 50;
         doorOpen = false;
         numPassengers = 20;
         propertySupport = new PropertyChangeSupport(this);
+        vetos = new VetoableChangeSupport(this);
     }
 
     public void activate() {
@@ -43,10 +42,14 @@ public class Bus implements Serializable {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                int decr = r.nextInt(numPassengers + 1);
-                setNumPassengers(numPassengers - decr); //To change body of generated methods, choose Tools | Templates.
+
+                if (numPassengers > 0) {
+
+                    int decr = r.nextInt(numPassengers + 1);
+                    setNumPassengers(numPassengers - decr + 1);
+                }
             }
-        }, 0, 10000);
+        }, 10000, 10000);
 
     }
 
@@ -69,19 +72,34 @@ public class Bus implements Serializable {
         propertySupport.firePropertyChange(PROP_DOOROPEN, oldDoorOpen, doorOpen);
     }
 
+    public boolean getDoorOpen() {
+        return this.doorOpen;
+    }
+
     public int getNumPassengers() {
         return numPassengers;
     }
 
-    public void setNumPassengers(int numPassengers) {
+    public void setNumPassengers(int newNumPassengers) {
         int oldNumPassengers = this.numPassengers;
-        try {
-            vetos.fireVetoableChange(PROP_NUMPASSENGERS, oldNumPassengers, numPassengers);
-            this.numPassengers = numPassengers;
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(Bus.class.getName()).log(Level.SEVERE, null, ex);
+
+        if (newNumPassengers <= capacity) {
+            try {
+                vetos.fireVetoableChange(PROP_NUMPASSENGERS, oldNumPassengers, newNumPassengers);
+                setDoorOpen(true);
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        setDoorOpen(false);
+                        numPassengers = newNumPassengers;
+                        propertySupport.firePropertyChange(PROP_NUMPASSENGERS, oldNumPassengers, newNumPassengers);
+                    }
+                }, 2000);
+            } catch (PropertyVetoException ex) {
+
+            }
         }
-        this.numPassengers = numPassengers;
+
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
