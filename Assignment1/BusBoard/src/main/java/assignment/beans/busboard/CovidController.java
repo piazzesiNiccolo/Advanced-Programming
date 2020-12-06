@@ -33,10 +33,9 @@ public class CovidController implements Serializable, VetoableChangeListener {
 
     @Override
     public void vetoableChange(PropertyChangeEvent ev) throws PropertyVetoException {
-        if (ev.getPropertyName().equals(Bus.PROP_NUMPASSENGERS)) {
-            if ((Integer) ev.getNewValue() > reducedCapacity) {
-                throw new PropertyVetoException(PROP_REDUCED_CAPACITY, ev);
-            }
+
+        if ((Integer) ev.getNewValue() > reducedCapacity) {
+            throw new PropertyVetoException(PROP_REDUCED_CAPACITY, ev);
         }
 
     }

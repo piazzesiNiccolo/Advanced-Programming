@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Objects>
+  <Employee>
+    <name type="String">Marco Rossi</name>
+    <role type="String">junior developer</role>
+  </Employee>
+  <Employee>
+    <name type="String">Giovanni Bianchi </name>
+    <role type="String">senior developer</role>
+  </Employee>
+  <Employee>
+    <name type="String">Samuele Innocenti</name>
+    <role type="String">project manager</role>
+  </Employee>
+</Objects>

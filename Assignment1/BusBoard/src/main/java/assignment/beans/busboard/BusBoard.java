@@ -200,6 +200,8 @@ public class BusBoard extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void bus1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_bus1PropertyChange
+        
+    //check wich of the bounded properties was updated, and update the corresponding gui components accordingly
         if (evt.getPropertyName().equals(Bus.PROP_DOOROPEN)) {
             String newVal = (Boolean) evt.getNewValue() ? "OPEN" : "CLOSED";
             jLabel7.setText(newVal);

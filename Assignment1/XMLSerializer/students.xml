@@ -11,8 +11,8 @@
     <age type="int">42</age>
   </Student>
   <Student>
-    <firstName type="String">null</firstName>
-    <surname type="String">null</surname>
-    <age type="int">0</age>
+    <firstName type="String">Luca</firstName>
+    <surname type="String">Mezzi</surname>
+    <age type="int">21</age>
   </Student>
 </Objects>
