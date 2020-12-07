@@ -16,7 +16,7 @@ import java.util.TimerTask;
  */
 public class BusBoard extends javax.swing.JFrame {
 
-    private final Timer t;
+    private final Timer t; //timer used to handle the delays
 
     /**
      *
@@ -169,21 +169,28 @@ public class BusBoard extends javax.swing.JFrame {
         if (evt.getSource() == jButton1) {
 
             jButton1.setBackground(Color.GRAY);
-
+            /*
+            i used a timer so the gui updated still updated while waiting the appropriate delay.
+            
+            */
             t.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     try {
+                        //the gui parse the text field, and if the input is a valid number it tries to accept the booking
+                        // by calling setNumpassengers
                         int val = Integer.parseInt(jTextField3.getText());
                         if (val > 5 || val <= 0) {
                             jLabel6.setText("please enter a number of passengers between 1 and 5");
                         } else {
                             int oldVal = bus1.getNumPassengers();
                             bus1.setNumPassengers(oldVal + val);
+                            //the gui interprets the numPassengers not changing value after calling the setter as the booking
+                            //getting cancelled
                             if (bus1.getNumPassengers() == oldVal) {
                                 jLabel6.setText("Booking cancelled: we apologize for the inconvenience");
                             } else {
-                                jLabel6.setText("");
+                                jLabel6.setText("");//this clears the label used for error messages when the booking is accepted
                             }
                         }
                     } catch (NumberFormatException ex) {
@@ -201,7 +208,7 @@ public class BusBoard extends javax.swing.JFrame {
 
     private void bus1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_bus1PropertyChange
         
-    //check wich of the bounded properties was updated, and update the corresponding gui components accordingly
+    //check which of the bounded properties was updated, and update the corresponding gui components accordingly
         if (evt.getPropertyName().equals(Bus.PROP_DOOROPEN)) {
             String newVal = (Boolean) evt.getNewValue() ? "OPEN" : "CLOSED";
             jLabel7.setText(newVal);

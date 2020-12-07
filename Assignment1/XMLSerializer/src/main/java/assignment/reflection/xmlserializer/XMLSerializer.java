@@ -63,7 +63,8 @@ public class XMLSerializer {
             XMLfield ann = f.getAnnotation(XMLfield.class);
             if (ann != null) {
                 s.append("    <");
-                String s1 = ann.name().equals("") ? f.getName() : ann.name(); //check to see if annotation name is set or has default value
+                //if the annotation name is set to default value simply use the field original name
+                String s1 = ann.name().equals("") ? f.getName() : ann.name(); 
                 s.append(s1);
                 s.append(" type=");
                 s.append("\"").append(ann.type()).append("\">");

@@ -2,14 +2,14 @@
 <Objects>
   <Employee>
     <name type="String">Marco Rossi</name>
-    <role type="String">junior developer</role>
+    <role type="String">Junior Developer</role>
   </Employee>
   <Employee>
-    <name type="String">Giovanni Bianchi </name>
-    <role type="String">senior developer</role>
+    <name type="String">Giovanni Bianchi</name>
+    <role type="String">Senior Developer</role>
   </Employee>
   <Employee>
     <name type="String">Samuele Innocenti</name>
-    <role type="String">project manager</role>
+    <role type="String">Project Manager</role>
   </Employee>
 </Objects>

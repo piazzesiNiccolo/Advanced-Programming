@@ -89,6 +89,12 @@ public class Bus implements Serializable {
         if (newNumPassengers <= capacity) {
             try {
                 vetos.fireVetoableChange(PROP_NUMPASSENGERS, oldNumPassengers, newNumPassengers);
+                /*
+                i decided to immediately change the value of numPassengers and simply send the event after the delay. 
+                This should prevent some synchronization problems when calling getPassengers 
+                (if you call it while setNumPassengers was waiting to update you could  get an incorrect value), 
+                wihtout using more complex solutions such as explicit locks or synchronized blocks.
+                 */
                 numPassengers = newNumPassengers;
                 setDoorOpen(true);
                 timer.schedule(new TimerTask() {
@@ -100,7 +106,7 @@ public class Bus implements Serializable {
                 }, 3000);
                 //if the change is vetoed or the bus is at full capacity we do nothing
             } catch (PropertyVetoException ex) {
-                   
+
             }
         }
 

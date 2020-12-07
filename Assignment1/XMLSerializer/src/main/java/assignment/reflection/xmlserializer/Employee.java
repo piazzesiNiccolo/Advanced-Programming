@@ -11,10 +11,8 @@ package assignment.reflection.xmlserializer;
  */
 @XMLable
 public class Employee {
-    
-    public final int ID;
 
-   
+    public int ID;
 
     @XMLfield(type = "String", name = "name")
     private final String fullName;
@@ -23,10 +21,8 @@ public class Employee {
     private String role;
 
     public Employee(int ID, String fullName, String role) {
+        this(fullName, role);
         this.ID = ID;
-        this.fullName = fullName;
-        this.role = role;
-        
 
     }
 
@@ -47,6 +43,10 @@ public class Employee {
         return ID;
     }
 
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
     public String getFullName() {
         return fullName;
     }
@@ -56,7 +56,5 @@ public class Employee {
         this.fullName = fullName;
         this.role = role;
     }
-
-    
 
 }

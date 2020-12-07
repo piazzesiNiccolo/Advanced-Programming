@@ -30,9 +30,9 @@ public class Main {
 
             //XMLable class with at least one field not marked as XMLField
             
-            Employee e1 = new Employee(1, "Marco Rossi", "junior developer");
-            Employee e2 = new Employee(2, "Giovanni Bianchi ", "senior developer");
-            Employee e3 = new Employee(3, "Samuele Innocenti", "project manager");
+            Employee e1 = new Employee(1, "Marco Rossi", "Junior Developer");
+            Employee e2 = new Employee(2, "Giovanni Bianchi", "Senior Developer");
+            Employee e3 = new Employee(3, "Samuele Innocenti", "Project Manager");
             Object[] employees = {e1,e2,e3};
             XMLSerializer.serialize(employees, "employees.xml");
             

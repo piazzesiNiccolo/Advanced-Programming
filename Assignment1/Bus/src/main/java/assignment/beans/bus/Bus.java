@@ -46,10 +46,13 @@ public class Bus implements Serializable {
                 if (numPassengers > 0) {
 
                     int decr = r.nextInt(numPassengers + 1);
-                    setNumPassengers(numPassengers - decr + 1);
+                    if (decr > 0) // no need to update numPassengers if no passenger is exiting
+                    {
+                        setNumPassengers(numPassengers - decr);
+                    }
                 }
             }
-        }, 10000, 10000);
+        }, 30000, 10000);
 
     }
 
@@ -86,15 +89,22 @@ public class Bus implements Serializable {
         if (newNumPassengers <= capacity) {
             try {
                 vetos.fireVetoableChange(PROP_NUMPASSENGERS, oldNumPassengers, newNumPassengers);
+                /*
+                i decided to immediately change the value of numPassengers and simply send the event after the delay. 
+                This should prevent some synchronization problems when calling getPassengers 
+                (if you call it while setNumPassengers was waiting to update you could  get the old value), 
+                wihtout using more complex solutions such as explicit locks or synchronized blocks.
+                 */
+                numPassengers = newNumPassengers;
                 setDoorOpen(true);
                 timer.schedule(new TimerTask() {
                     @Override
                     public void run() {
                         setDoorOpen(false);
-                        numPassengers = newNumPassengers;
                         propertySupport.firePropertyChange(PROP_NUMPASSENGERS, oldNumPassengers, newNumPassengers);
                     }
-                }, 2000);
+                }, 3000);
+                //if the change is vetoed or the bus is at full capacity we do nothing
             } catch (PropertyVetoException ex) {
 
             }
@@ -119,3 +129,4 @@ public class Bus implements Serializable {
     }
 
 }
+
