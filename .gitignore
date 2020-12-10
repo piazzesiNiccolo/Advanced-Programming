@@ -11,7 +11,7 @@
 .mtj.tmp/
 
 # Package Files #
-*.jar
+
 *.war
 *.nar
 *.ear
@@ -28,3 +28,5 @@ hs_err_pid*
 /esercizio3/bin/target/
 /Assignment1/XMLSerializer/target/
 /Assignment1/BusBoard/target/
+/Assignment1/Bus/target/
+/Assignment1/CovidController/target/

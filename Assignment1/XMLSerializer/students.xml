@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Objects>
+<assignment.reflection.xmlserializer>
   <Student>
     <firstName type="String">Niccolò</firstName>
     <surname type="String">Piazzesi</surname>
@@ -15,4 +15,4 @@
     <surname type="String">Mezzi</surname>
     <age type="int">21</age>
   </Student>
-</Objects>
+</assignment.reflection.xmlserializer>

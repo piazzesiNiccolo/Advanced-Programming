@@ -42,7 +42,7 @@ public class Main {
             String str3 = "string three";
             String[] strings ={str1,str2,str3};
             XMLSerializer.serialize(strings,"strings.xml");
-            
+            XMLDeserializer.deserializeXML("students.xml");
         } catch (IllegalArgumentException | IllegalAccessException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }

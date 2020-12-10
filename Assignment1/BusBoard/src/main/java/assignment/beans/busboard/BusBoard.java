@@ -5,6 +5,7 @@
  */
 package assignment.beans.busboard;
 
+
 import java.awt.Color;
 
 import java.util.Timer;
@@ -39,8 +40,8 @@ public class BusBoard extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        bus1 = new assignment.beans.busboard.Bus();
-        covidController1 = new assignment.beans.busboard.CovidController();
+        bus1 = new assignment.beans.bus.Bus();
+        covidController1 = new assignment.beans.covidcontroller.CovidController();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
@@ -209,10 +210,10 @@ public class BusBoard extends javax.swing.JFrame {
     private void bus1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_bus1PropertyChange
         
     //check which of the bounded properties was updated, and update the corresponding gui components accordingly
-        if (evt.getPropertyName().equals(Bus.PROP_DOOROPEN)) {
+        if (evt.getPropertyName().equals(assignment.beans.bus.Bus.PROP_DOOROPEN)) {
             String newVal = (Boolean) evt.getNewValue() ? "OPEN" : "CLOSED";
             jLabel7.setText(newVal);
-        } else if (evt.getPropertyName().equals(Bus.PROP_NUMPASSENGERS))
+        } else if (evt.getPropertyName().equals(assignment.beans.bus.Bus.PROP_NUMPASSENGERS))
             jLabel9.setText(evt.getNewValue().toString());
     }//GEN-LAST:event_bus1PropertyChange
 
@@ -255,8 +256,8 @@ public class BusBoard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private assignment.beans.busboard.Bus bus1;
-    private assignment.beans.busboard.CovidController covidController1;
+    private assignment.beans.bus.Bus bus1;
+    private assignment.beans.covidcontroller.CovidController covidController1;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

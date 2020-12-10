@@ -29,7 +29,7 @@ public class XMLSerializer {
                 BufferedWriter w = new BufferedWriter(new FileWriter(fileName));
 
                 w.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");//clear the file and set it up for xml
-                w.append("<Objects>\n"); //<Objects> will be the unique root element, this was needed to have a correct xml file
+                w.append("<" + c.getPackageName() + ">\n"); //<Objects> will be the unique root element, this was needed to have a correct xml file
 
                 for (Object a : arr) {
                     //for some reason /t would write two tabs so i had to write s.append("  <") 
@@ -40,7 +40,7 @@ public class XMLSerializer {
                     w.append(s.toString());
                     s.setLength(0);
                 }
-                w.append("</Objects>\n");
+                w.append("</" + c.getPackageName() + ">");
 
                 w.close();
             }
