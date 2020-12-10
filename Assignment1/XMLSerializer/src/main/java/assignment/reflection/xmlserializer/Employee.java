@@ -19,10 +19,22 @@ public class Employee {
 
     @XMLfield(type = "String")
     private String role;
+    
+    @XMLfield(type = "double", name = "salary")
+    private double taxedSalary;
 
-    public Employee(int ID, String fullName, String role) {
-        this(fullName, role);
+    public double getTaxedSalary() {
+        return taxedSalary;
+    }
+
+    public void setTaxedSalary(double taxedSalary) {
+        this.taxedSalary = taxedSalary;
+    }
+
+    public Employee(int ID, String fullName, String role,double taxedSalary) {
+        this(fullName, role,taxedSalary);
         this.ID = ID;
+        this.taxedSalary = taxedSalary;
 
     }
 
@@ -51,10 +63,11 @@ public class Employee {
         return fullName;
     }
 
-    public Employee(String fullName, String role) {
+    public Employee(String fullName, String role,double taxedSalary) {
         this.ID = 0;
         this.fullName = fullName;
         this.role = role;
+        this.taxedSalary = taxedSalary;
     }
 
 }

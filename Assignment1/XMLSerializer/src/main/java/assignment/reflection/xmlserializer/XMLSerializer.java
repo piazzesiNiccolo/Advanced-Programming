@@ -58,19 +58,21 @@ public class XMLSerializer {
         to iterate on the fields
          */
         for (Field f : c.getDeclaredFields()) {
+            //the field is serialized only if it's a string or of primitive type
+            if (f.getType().isPrimitive() || f.getType().equals(String.class)) {
+                f.setAccessible(true); //need it to access private fields
+                XMLfield ann = f.getAnnotation(XMLfield.class);
+                if (ann != null) {
+                    s.append("    <");
+                    //if the annotation name is set to default value simply use the field original name
+                    String s1 = ann.name().equals("") ? f.getName() : ann.name();
+                    s.append(s1);
+                    s.append(" type=");
+                    s.append("\"").append(ann.type()).append("\">");
+                    s.append(f.get(a));
+                    s.append("</").append(s1).append(">\n");
 
-            f.setAccessible(true); //need it to access private fields
-            XMLfield ann = f.getAnnotation(XMLfield.class);
-            if (ann != null) {
-                s.append("    <");
-                //if the annotation name is set to default value simply use the field original name
-                String s1 = ann.name().equals("") ? f.getName() : ann.name(); 
-                s.append(s1);
-                s.append(" type=");
-                s.append("\"").append(ann.type()).append("\">");
-                s.append(f.get(a));
-                s.append("</").append(s1).append(">\n");
-
+                }
             }
         }
     }

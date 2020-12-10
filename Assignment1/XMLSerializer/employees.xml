@@ -3,13 +3,16 @@
   <Employee>
     <name type="String">Marco Rossi</name>
     <role type="String">Junior Developer</role>
+    <salary type="double">1500.0</salary>
   </Employee>
   <Employee>
     <name type="String">Giovanni Bianchi</name>
     <role type="String">Senior Developer</role>
+    <salary type="double">3250.7</salary>
   </Employee>
   <Employee>
     <name type="String">Samuele Innocenti</name>
     <role type="String">Project Manager</role>
+    <salary type="double">4000.0</salary>
   </Employee>
 </assignment.reflection.xmlserializer>

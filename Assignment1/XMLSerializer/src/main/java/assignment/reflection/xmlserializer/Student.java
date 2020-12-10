@@ -5,6 +5,7 @@
  */
 package assignment.reflection.xmlserializer;
 
+
 /**
  *
  * @author nicco
@@ -13,15 +14,31 @@ package assignment.reflection.xmlserializer;
 public class Student {
 
     @XMLfield(type = "String")
-    public String firstName;
+    public final String firstName;
 
     @XMLfield(type = "String",name= "surname")
-    public String lastName;
+    public final String lastName;
 
     @XMLfield(type = "int")
     private int age;
 
-    public Student() {
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    
+   
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 
     public Student(String firstName, String lastName, int age) {

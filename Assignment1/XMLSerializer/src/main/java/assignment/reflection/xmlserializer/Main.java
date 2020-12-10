@@ -30,9 +30,9 @@ public class Main {
 
             //XMLable class with at least one field not marked as XMLField
             
-            Employee e1 = new Employee(1, "Marco Rossi", "Junior Developer");
-            Employee e2 = new Employee(2, "Giovanni Bianchi", "Senior Developer");
-            Employee e3 = new Employee(3, "Samuele Innocenti", "Project Manager");
+            Employee e1 = new Employee( "Marco Rossi", "Junior Developer",1500.0);
+            Employee e2 = new Employee(2, "Giovanni Bianchi", "Senior Developer",3250.70);
+            Employee e3 = new Employee(3, "Samuele Innocenti", "Project Manager",4000.0);
             Object[] employees = {e1,e2,e3};
             XMLSerializer.serialize(employees, "employees.xml");
             
@@ -42,7 +42,7 @@ public class Main {
             String str3 = "string three";
             String[] strings ={str1,str2,str3};
             XMLSerializer.serialize(strings,"strings.xml");
-            XMLDeserializer.deserializeXML("students.xml");
+            XMLDeserializer.deserializeXML("employees.xml");
         } catch (IllegalArgumentException | IllegalAccessException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
