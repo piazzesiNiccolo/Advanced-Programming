@@ -5,7 +5,6 @@
  */
 package assignment.beans.busboard;
 
-
 import java.awt.Color;
 
 import java.util.Timer;
@@ -165,51 +164,53 @@ public class BusBoard extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
 
         if (evt.getSource() == jButton1) {
-
-            jButton1.setBackground(Color.GRAY);
             /*
             i used a timer so the gui updated still updated while waiting the appropriate delay.
             
-            */
-            t.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    try {
-                        //the gui parse the text field, and if the input is a valid number it tries to accept the booking
-                        // by calling setNumpassengers
-                        int val = Integer.parseInt(jTextField3.getText());
-                        if (val > 5 || val <= 0) {
-                            jLabel6.setText("please enter a number of passengers between 1 and 5");
-                        } else {
+             */
+            try {
+                //the gui parse the text field, and if the input is a valid number it tries to accept the booking
+                // by calling setNumpassengers
+                int val = Integer.parseInt(jTextField3.getText());
+                if (val > 5 || val <= 0) {
+                    jLabel6.setText("please enter a number of passengers between 1 and 5");
+                } else {
+                    jButton1.setBackground(Color.GRAY);
+
+                    jLabel6.setText(""); //clear previous error messages
+                    t.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+
                             int oldVal = bus1.getNumPassengers();
                             bus1.setNumPassengers(oldVal + val);
                             //the gui interprets the numPassengers not changing value after calling the setter as the booking
                             //getting cancelled
                             if (bus1.getNumPassengers() == oldVal) {
                                 jLabel6.setText("Booking cancelled: we apologize for the inconvenience");
-                            } else {
-                                jLabel6.setText("");//this clears the label used for error messages when the booking is accepted
                             }
+                            jButton1.setBackground(Color.WHITE);
+
                         }
-                    } catch (NumberFormatException ex) {
-                        jLabel6.setText("please enter a valid number");
-                    } finally {
-                        jTextField3.setText("1");
-                        jButton1.setBackground(Color.WHITE);
-                    }
+                    }, 2000);
+
                 }
-            },
-                    2000);
+            } catch (NumberFormatException ex) {
+                jLabel6.setText("please enter a valid number");
+            } finally {
+                jTextField3.setText("1");
+
+            }
+
         }
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void bus1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_bus1PropertyChange
-        
-    //check which of the bounded properties was updated, and update the corresponding gui components accordingly
+
+        //check which of the bounded properties was updated, and update the corresponding gui components accordingly
         if (evt.getPropertyName().equals(assignment.beans.bus.Bus.PROP_DOOROPEN)) {
             String newVal = (Boolean) evt.getNewValue() ? "OPEN" : "CLOSED";
             jLabel7.setText(newVal);

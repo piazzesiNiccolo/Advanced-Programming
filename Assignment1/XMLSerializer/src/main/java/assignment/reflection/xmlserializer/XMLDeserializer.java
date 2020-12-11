@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +39,7 @@ public class XMLDeserializer {
 
     public static Object[] deserializeXML(String filePath) {
         List<Object> result = new ArrayList<>();
+        //i prefer to use a list for intermediate operations and convert it to an array at the end
         try {
 
             File f = new File(filePath);
@@ -53,10 +55,19 @@ public class XMLDeserializer {
                 sb.append(line.trim());
             }
             String xml = sb.toString();
-            
-            Element root = parseXMLFromString(xml, sb);
 
-            //setup for class construction
+            Element root = parseXMLFromString(xml);
+            //get the full class name by concatenating the package name used as the root node with
+            //the class name provided by the first object of the list
+            sb.setLength(0);
+            sb.append(root.getNodeName());
+            sb.append('.');
+            sb.append(root.getFirstChild().getNodeName());
+
+            /*
+            Setup for deserialization: try to find the class with the name that was parsed
+            and indicate the allowed types
+            */
             Class c = Class.forName(sb.toString());
 
             Map<String, Class> types = new HashMap<>();
@@ -70,58 +81,101 @@ public class XMLDeserializer {
             types.put("char", char.class);
             types.put("String", String.class);
 
+            
+            //iterate on the xml elements and populate the list with the objects
             for (Node child = root.getFirstChild(); child != null; child = child.getNextSibling()) {
-                createObject(c, child, types);
-
+                result.add(createObject(c, child, types));
             }
-        } catch (ClassNotFoundException | SAXException | IOException | ParserConfigurationException ex) {
-            Logger.getLogger(XMLDeserializer.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (DOMException ex) {
-            Logger.getLogger(XMLDeserializer.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchMethodException ex) {
+        } catch (ClassNotFoundException | SAXException | IOException | ParserConfigurationException | DOMException | NoSuchMethodException ex) {
             Logger.getLogger(XMLDeserializer.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
         return result.stream().toArray();
     }
 
     private static Object createObject(Class c, Node child, Map<String, Class> types) throws DOMException, NoSuchMethodException {
-        /*
-        parse each xml object to find type and value of each field, then use the appropriate constructor to create
-        the instance
-        */
-        int length = child.getChildNodes().getLength();
-        Class[] fieldTypes = new Class[length];
-        Object[] fieldValues = new Object[length];
-        int i = 0;
-        for (Node field = child.getFirstChild(); field != null; field = field.getNextSibling()) {
-            String fieldType = field.getAttributes().getNamedItem("type").getNodeValue();
-            if (fieldType.equals("String")) {
-                fieldTypes[i] = String.class;
+        Object res = "NOT CREATED"; //prefer it to initializing it as null
+        try {
+            /*
+            parse each xml node to find type and value of each field, then use the appropriate constructor to create
+            the instance
+            */
+            int length = child.getChildNodes().getLength();
+            Class[] fieldTypes = new Class[length];
+            Object[] fieldValues = new Object[length];
+            int i = 0;
+            
+            for (Node field = child.getFirstChild(); field != null; field = field.getNextSibling()) {
                 
-            } else {
+                String fieldType = field.getAttributes().getNamedItem("type").getNodeValue();
+                String fieldValue = field.getTextContent();
+                
                 fieldTypes[i] = types.get(fieldType);
-               
-
+                if (fieldType.equals("String")) {
+                    fieldValues[i] = fieldValue;
+                } else {
+                    fieldValues[i] = parsePrimitive(fieldType, fieldValue);
+                    }
+                i++;
+                
             }
-            i++;
-
+            /*
+            actually create the object. It's assumed that the proper constructor exists
+            */
+            Constructor con = c.getConstructor(fieldTypes);
+            res = con.newInstance(fieldValues);
+            
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            Logger.getLogger(XMLDeserializer.class.getName()).log(Level.SEVERE, null, ex);
         }
-        Constructor con = c.getConstructor(fieldTypes);
-        return null;
-
+        return res;
     }
 
-    private static Element parseXMLFromString(String xml, StringBuilder sb) throws IOException, UnsupportedEncodingException, SAXException, ParserConfigurationException {
+    private static Object parsePrimitive(String fieldType, String value){
+        Object res = "NOT PARSED";
+        /*
+        a simple case switch to parse the string read as the appropriate value
+        */  
+        switch(fieldType){
+            case "int":
+                res = Integer.parseInt(value);
+                break;
+            case "double":
+                res = Double.parseDouble(value);
+                break;
+            case "float":
+                res = Float.parseFloat(value);
+                break;
+            case "short":
+                res = Short.parseShort(value);
+                break;
+            case "long":
+                res = Long.parseLong(value);
+                break;
+            case "byte":
+                res = Byte.parseByte(value);
+                break;
+            case "char":
+                // in the case of a char value we assume that the string parsed is one character long
+                res = value.charAt(0); 
+                break;
+            case "boolean":
+                res = Boolean.parseBoolean(value);
+                break;
+            default:
+                break;
+            
+        }
+        return res;
+    }
+    
+    private static Element parseXMLFromString(String xml) throws IOException, UnsupportedEncodingException, SAXException, ParserConfigurationException {
         //boiler code to parse the XML
         InputStream in = new ByteArrayInputStream(xml.getBytes("utf-8"));
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder build = factory.newDocumentBuilder();
         Document doc = build.parse(in);
         Element root = doc.getDocumentElement();
-        sb.setLength(0);
-        sb.append(root.getNodeName());
-        sb.append('.');
-        sb.append(root.getFirstChild().getNodeName());
         return root;
     }
 

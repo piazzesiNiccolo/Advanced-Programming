@@ -20,6 +20,7 @@ public class XMLSerializer {
 
     public static void serialize(Object[] arr, String fileName) throws IllegalArgumentException, IllegalAccessException {
         try {
+            
             //it's assumed that every object is of the same class so i simply get it from the first element
             Class c = arr[0].getClass();
             if (c.isAnnotationPresent(XMLable.class)) {
@@ -28,12 +29,17 @@ public class XMLSerializer {
                 StringBuilder s = new StringBuilder();
                 BufferedWriter w = new BufferedWriter(new FileWriter(fileName));
 
-                w.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");//clear the file and set it up for xml
-                w.append("<" + c.getPackageName() + ">\n"); //<Objects> will be the unique root element, this was needed to have a correct xml file
-
+                w.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");//clear the file and set it up
+                
+                /*
+                i use the package name as root element for two reasons:
+                - it makes the root element unique, producing valid xml
+                - it makes it easier to deserialize because you can get the full class name of the objects by simply
+                concatenating this name with the simple class name that is used as a tag of the nodes
+                */
+                w.append("<" + c.getPackageName() + ">\n"); 
                 for (Object a : arr) {
-                    //for some reason /t would write two tabs so i had to write s.append("  <") 
-                    // with the whitespaces added manually for the class name and the fields
+                    //encapsulate each object in a XML node that has the class name as his tag
                     s.append("  <").append(c.getSimpleName()).append(">\n");
                     serializeFields(c, s, a);
                     s.append("  </").append(c.getSimpleName()).append(">\n");
@@ -58,11 +64,14 @@ public class XMLSerializer {
         to iterate on the fields
          */
         for (Field f : c.getDeclaredFields()) {
+            
             //the field is serialized only if it's a string or of primitive type
             if (f.getType().isPrimitive() || f.getType().equals(String.class)) {
                 f.setAccessible(true); //need it to access private fields
                 XMLfield ann = f.getAnnotation(XMLfield.class);
+                
                 if (ann != null) {
+                    //create the xml element for each field
                     s.append("    <");
                     //if the annotation name is set to default value simply use the field original name
                     String s1 = ann.name().equals("") ? f.getName() : ann.name();

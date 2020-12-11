@@ -38,6 +38,11 @@ public class Employee {
 
     }
 
+    @Override
+    public String toString() {
+        return "Employee{" + "ID=" + ID + ", fullName=" + fullName + ", role=" + role + ", taxedSalary=" + taxedSalary + '}';
+    }
+
     public Employee() {
         ID = 1;
         fullName = " ";
