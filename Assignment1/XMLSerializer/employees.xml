@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <assignment.reflection.xmlserializer>
   <Employee>
+    <identifier type="int">0</identifier>
     <name type="String">Marco Rossi</name>
     <role type="String">Junior Developer</role>
     <salary type="double">1500.0</salary>
   </Employee>
   <Employee>
+    <identifier type="int">2</identifier>
     <name type="String">Giovanni Bianchi</name>
     <role type="String">Senior Developer</role>
     <salary type="double">3250.7</salary>
   </Employee>
   <Employee>
+    <identifier type="int">3</identifier>
     <name type="String">Samuele Innocenti</name>
     <role type="String">Project Manager</role>
     <salary type="double">4000.0</salary>

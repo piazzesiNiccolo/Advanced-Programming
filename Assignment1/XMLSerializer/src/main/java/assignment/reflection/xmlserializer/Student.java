@@ -14,10 +14,10 @@ package assignment.reflection.xmlserializer;
 public class Student {
 
     @XMLfield(type = "String")
-    public final String firstName;
+    public  String firstName;
 
     @XMLfield(type = "String",name= "surname")
-    public final String lastName;
+    public  String lastName;
 
     @XMLfield(type = "int")
     private int age;
@@ -41,6 +41,9 @@ public class Student {
         this.age = age;
     }
 
+    public Student(){
+        
+    }
     public Student(String firstName, String lastName, int age) {
         this.firstName = firstName;
         this.lastName = lastName;

@@ -13,7 +13,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +39,32 @@ import org.xml.sax.SAXException;
  */
 public class XMLDeserializer {
 
+    
+    private static boolean isDeserializable(Class c){
+        boolean check = false;
+        if(c.isAnnotationPresent(XMLable.class)){
+            try {
+                c.getConstructor();
+                for(Field f: c.getDeclaredFields()){
+                    f.setAccessible(true);
+                    check  = !(Modifier.isStatic(f.getModifiers())) && 
+                            (f.getType().isPrimitive() || f.getType().equals(String.class)) &&
+                            f.isAnnotationPresent(XMLfield.class);
+                    
+                    if(!check){
+                        //as soon as one field is not deserializable we stop
+                        break;
+                    }
+                                
+                }
+            } catch (NoSuchMethodException ex) {
+                return false; //if no default constructor exists getCo nstructor raises this exception
+            } catch (SecurityException ex) {
+                Logger.getLogger(XMLDeserializer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return check;
+    }
     public static Object[] deserializeXML(String filePath) {
         List<Object> result = new ArrayList<>();
         //i prefer to use a list for intermediate operations and convert it to an array at the end
@@ -66,30 +94,33 @@ public class XMLDeserializer {
 
             /*
             Setup for deserialization: try to find the class with the name that was parsed
-            and indicate the allowed types
+            and check if it can be deserialized
             */
             Class c = Class.forName(sb.toString());
+            if(isDeserializable(c)){
+                
+                //possible types of each field
+                Map<String, Class> types = new HashMap<>();
+                types.put("int", int.class);
+                types.put("double", double.class);
+                types.put("short", short.class);
+                types.put("float", float.class);
+                types.put("long", long.class);
+                types.put("boolean", boolean.class);
+                types.put("byte", byte.class);
+                types.put("char", char.class);
+                types.put("String", String.class);
 
-            Map<String, Class> types = new HashMap<>();
-            types.put("int", int.class);
-            types.put("double", double.class);
-            types.put("short", short.class);
-            types.put("float", float.class);
-            types.put("long", long.class);
-            types.put("boolean", boolean.class);
-            types.put("byte", byte.class);
-            types.put("char", char.class);
-            types.put("String", String.class);
 
-            
-            //iterate on the xml elements and populate the list with the objects
-            for (Node child = root.getFirstChild(); child != null; child = child.getNextSibling()) {
-                result.add(createObject(c, child, types));
+                //iterate on the xml elements and populate the list with the objects
+                for (Node child = root.getFirstChild(); child != null; child = child.getNextSibling()) {
+                    result.add(createObject(c, child, types));
+                }
             }
         } catch (ClassNotFoundException | SAXException | IOException | ParserConfigurationException | DOMException | NoSuchMethodException ex) {
             Logger.getLogger(XMLDeserializer.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+        if(result.isEmpty()){result.add("COULD NOT DESERIALIZE");}
         return result.stream().toArray();
     }
 
@@ -120,7 +151,9 @@ public class XMLDeserializer {
                 
             }
             /*
-            actually create the object. It's assumed that the proper constructor exists
+            actually create the object. It's assumed that the proper constructor exists.
+            For the objects created by the default constructor, their fields were instantianted with a default value
+            so this should work properly for them as well
             */
             Constructor con = c.getConstructor(fieldTypes);
             res = con.newInstance(fieldValues);

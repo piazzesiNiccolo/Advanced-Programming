@@ -25,11 +25,12 @@ public class Main {
             Student s1 = new Student("Niccolò", "Piazzesi", 22);
             Student s2 = new Student("Jane", "Doe", 42);
             Student s3 = new Student("Luca", "Mezzi", 21);
-            Object[] students = {s1, s2, s3};
+            Student s4 = new Student();
+            Object[] students = {s1, s2, s3,s4};
             XMLSerializer.serialize(students, "students.xml");
             System.out.println("students.xml file created\n");
             
-            //XMLable class with at least one field not marked as XMLField
+            //XMLable class but no default constructor. Can serialize but cannot deserialize
             Employee e1 = new Employee("Marco Rossi", "Junior Developer", 1500.0);
             Employee e2 = new Employee(2, "Giovanni Bianchi", "Senior Developer", 3250.70);
             Employee e3 = new Employee(3, "Samuele Innocenti", "Project Manager", 4000.0);
@@ -50,6 +51,8 @@ public class Main {
             System.out.println("\nDeserializing objects from students.xml:");
             Arrays.stream(deserializedStudents).forEach(e -> System.out.println(e.toString()));
             Object[] deserializedEmployees = XMLDeserializer.deserializeXML("employees.xml");
+            
+            //Not deserializable class
             System.out.println("\n\nDeserializing objects from employees.xml:");
             Arrays.stream(deserializedEmployees).forEach(e -> System.out.println(e.toString()));
 
