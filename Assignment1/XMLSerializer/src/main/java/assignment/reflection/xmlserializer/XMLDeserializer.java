@@ -58,7 +58,7 @@ public class XMLDeserializer {
                                 
                 }
             } catch (NoSuchMethodException ex) {
-                return false; //if no default constructor exists getCo nstructor raises this exception
+                return false; //if no default constructor exists getConstructor raises this exception
             } catch (SecurityException ex) {
                 Logger.getLogger(XMLDeserializer.class.getName()).log(Level.SEVERE, null, ex);
             }
