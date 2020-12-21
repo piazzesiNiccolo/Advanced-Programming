@@ -30,3 +30,5 @@ hs_err_pid*
 /Assignment1/BusBoard/target/
 /Assignment1/Bus/target/
 /Assignment1/CovidController/target/
+/venv/
+*.pyc

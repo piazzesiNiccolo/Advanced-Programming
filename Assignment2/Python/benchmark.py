@@ -19,15 +19,17 @@ def benchmark(warmups=0, iter=1, verbose=False, csv_file=None):
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
+            result = func(*args,**kwargs) ##store the function result for return
             warm = dict()
+            if warmups != 0:
+                warm = _timeFunctionCalls(warmups, func, *args, **kwargs)
             invoke = _timeFunctionCalls(iter, func, *args, **kwargs)
             if verbose:
                 print("{:<8} {:<15} {:<10}".format(
                     'run num', 'is warmup', 'time'))
-                if warmups != 0:
-                    warm = _timeFunctionCalls(warmups, func, *args, **kwargs)
-                    for k, v in warm.items():
-                        print("{:<8} {:<15} {:<10}".format(k, 'yes', v))
+                
+                for k, v in warm.items():
+                    print("{:<8} {:<15} {:<10}".format(k, 'yes', v))
 
                 for k, v in invoke.items():
                     print("{:<8} {:<15} {:<10}".format(k+warmups, 'no', v))
@@ -45,28 +47,30 @@ def benchmark(warmups=0, iter=1, verbose=False, csv_file=None):
                         writer.writerow([k, 'yes', v])
                     for k, v in invoke.items():
                         writer.writerow([k+warmups, 'no', v])
-
                     writer.writerow(['average', avg])
                     writer.writerow(['variance', variance])
-
-            return func
+            return result
         return wrapper
     return decorator
 
 
-def fibonacci(n=0):
+def _rec_fibonacci(n):
     if n == 0:
         return 0
     elif n == 1:
         return 1
     else:
-        return fibonacci(n-1) + fibonacci(n-2)
+        return _rec_fibonacci(n-1) + _rec_fibonacci(n-2)
+
+@benchmark(verbose=True,iter=10)
+def fibonacci(n=0):
+    #helper function so the decorator doesnt execute its extra code for each recursive call
+    return _rec_fibonacci(n)
 
 
 def test():
-    fib = benchmark(warmups=3, iter=3, verbose=True, csv_file='file.csv')
-    fib = fib(fibonacci)
-    fib(5)
+  fibonacci(4)
 
 
-test()
+if __name__ == "__main__":
+    test()
