@@ -1,7 +1,8 @@
-import threading
-from functools import wraps
-import time
 import csv
+import os
+import threading
+import time
+from functools import wraps
 
 
 def _timeFunctionCalls(rounds, function, *args, **kwargs):
@@ -36,11 +37,13 @@ def benchmark(warmups=0, iter=1, verbose=False, csv_file=None):
 
             avg = sum(invoke.values()) / iter
             variance = sum((v - avg) ** 2 for v in invoke.values()) / iter
-            print("{:<8} {:<15}".format('average time', avg))
-            print("{:<8} {:<15}".format('variance', variance))
+            print("{:<8} {:<15}\
+                    \n{:<8} {:<15}\n"\
+                    .format('average time', avg,\
+                            'variance',variance))
 
             if csv_file:
-                with open(csv_file, "w") as f:
+                with open(csv_file, "a") as f:
                     writer = csv.writer(f)
                     writer.writerow(['run num', 'is warmup', 'timing'])
                     for k, v in warm.items():
@@ -62,14 +65,27 @@ def _rec_fibonacci(n):
     else:
         return _rec_fibonacci(n-1) + _rec_fibonacci(n-2)
 
-@benchmark(verbose=True,iter=10)
 def fibonacci(n=0):
-    #helper function so the decorator doesnt execute its extra code for each recursive call
+    #using an helper function so the decorator doesn't execute its extra code for each recursive call
     return _rec_fibonacci(n)
 
 
 def test():
-  fibonacci(4)
+    files = ["f_1_16.csv","f_2_8.csv","f_4_4.csv","f_8_2.csv"]
+    #clear the existing files
+    [os.remove(f) for f in files if os.path.isfile(f)]
+    threads = list()
+    for i in range(4):
+        threads.clear()
+        it = 2**i
+        print("\n\nNUMBER OF THREADS:{}\n\n".format(it))
+        fib = benchmark(iter=int(16/it), csv_file=files[i])
+        fib = fib(fibonacci)
+        [threads.append(threading.Thread(target=fib,args=(10,))) for i in range(it)]
+        [thread.start() for thread in threads]
+        [thread.join() for thread in threads]
+
+    
 
 
 if __name__ == "__main__":

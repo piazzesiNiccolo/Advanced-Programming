@@ -1,4 +1,4 @@
-package MyMapReduce;
+package assignment.framework.mapreduce.piazzesi;
 
 public class Pair<T1,T2>{
     T1 key;
