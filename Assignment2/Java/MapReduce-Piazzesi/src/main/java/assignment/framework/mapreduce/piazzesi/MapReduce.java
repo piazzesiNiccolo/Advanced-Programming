@@ -6,6 +6,7 @@
 package assignment.framework.mapreduce.piazzesi;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.stream.Stream;
@@ -13,18 +14,26 @@ import java.util.stream.Stream;
 /**
  *
  * @author nicco
+ * @param <K>
+ * @param <V>
+ * @param <T>
+ * @param <S>
  */
-public abstract class MapReduce {
+public abstract class MapReduce<K,V,T,S> {
     
     
-    public final <T,S,K,V> void compute(Path p, File f){
-        Stream<Pair<K,V>> i = read(p);
-        Stream<Pair<T,S>> out = map(i);
-        write(f,reduce(out.sorted(compare())));
+    public final void compute(Path src, File dest) throws IOException{
+        Stream i = read(src);
+        Stream out = map(i);
+        Stream sorted = out.sorted();
+        Stream r = reduce(sorted);
+        write(dest, r);
+        
+        
     }
-    protected abstract <K,V> Stream<Pair<K,V>> read(Path p);
-    protected abstract <T,S,K,V> Stream<Pair<T, S>> map(Stream<Pair<K,V>> in);
-    protected abstract <T> Comparator<T> compare();
-    protected abstract <T,S,K,V> Stream<Pair<T, S>> reduce(Stream<Pair<K,V>> in);
-    protected abstract <K,V> void write(File f, Stream<Pair<K,V>> r );
+    protected abstract Stream<Pair<K,V>> read(Path p) throws IOException;
+    protected abstract Stream<Pair<T, S>> map(Stream<Pair<K,V>> in);
+    
+    protected abstract Stream<Pair<T, S>> reduce(Stream<Pair<T,S>> in);
+    protected abstract  void write(File f, Stream<Pair<T,S>> r ) throws IOException;
 }
