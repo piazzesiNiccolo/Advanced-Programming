@@ -14,26 +14,25 @@ import java.util.stream.Stream;
 /**
  *
  * @author nicco
- * @param <K>
- * @param <V>
+ * @param <R>
+ * @param <U>
  * @param <T>
- * @param <S>
  */
-public abstract class MapReduce<K,V,T,S> {
+public abstract class MapReduce<R extends Pair,  U extends Pair, T extends Pair> {
     
     
     public final void compute(Path src, File dest) throws IOException{
         Stream i = read(src);
         Stream out = map(i);
-        Stream sorted = out.sorted();
-        Stream r = reduce(sorted);
+                    
+        Stream r = reduce(out);
         write(dest, r);
         
         
     }
-    protected abstract Stream<Pair<K,V>> read(Path p) throws IOException;
-    protected abstract Stream<Pair<T, S>> map(Stream<Pair<K,V>> in);
+    protected abstract  Stream<R> read(Path p) throws IOException;
+    protected abstract Stream<U> map(Stream<R> in);
     
-    protected abstract Stream<Pair<T, S>> reduce(Stream<Pair<T,S>> in);
-    protected abstract  void write(File f, Stream<Pair<T,S>> r ) throws IOException;
+    protected abstract Stream<T> reduce(Stream<U> in);
+    protected abstract  void write(File f, Stream<T> r ) throws IOException;
 }
