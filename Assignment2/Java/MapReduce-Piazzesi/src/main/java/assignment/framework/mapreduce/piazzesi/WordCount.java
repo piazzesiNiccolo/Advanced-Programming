@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -30,10 +31,10 @@ public class WordCount extends MapReduce<Pair<String, List<String>>, Pair<String
         return r.read();
     }
 
-    private Stream<Pair<String, Integer>> countwords(List<String> lst) {
+    private Stream<Pair<String, Integer>> countWords(List<String> lst) {
         Stream<Stream<Pair<String, Integer>>> m = lst.stream().map((String s) -> {
             return new Scanner(s).tokens()
-                    .map(str -> str.toLowerCase())
+                    .map(str -> str.toLowerCase().replaceAll("[^a-zA-Z0-9]", ""))
                     .collect(Collectors.groupingBy(Function.identity(), Collectors.summingInt(e -> 1)))
                     .entrySet()
                     .stream()
@@ -46,7 +47,7 @@ public class WordCount extends MapReduce<Pair<String, List<String>>, Pair<String
     @Override
     protected Stream<Pair<String, Integer>> map(Stream<Pair<String, List<String>>> in) {
         return in.map(i -> i.getValue())
-                .flatMap(l -> countwords(l))
+                .flatMap(l -> countWords(l))
                 .filter(e -> e.getKey().length() > 3);
                 
 
@@ -66,6 +67,12 @@ public class WordCount extends MapReduce<Pair<String, List<String>>, Pair<String
     @Override
     protected void write(File f, Stream<Pair<String, Integer>> r) throws FileNotFoundException {
         Writer.write(f, r);
+    }
+
+    @Override
+    protected Stream<Pair<String, Integer>> compare(Stream<Pair<String, Integer>> s) {
+        return s.sorted(Comparator.comparing(Pair::getKey));
+
     }
 
     
