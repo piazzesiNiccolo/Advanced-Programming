@@ -31,10 +31,12 @@ public class WordCount extends MapReduce<Pair<String, List<String>>, Pair<String
         return r.read();
     }
 
-    private Stream<Pair<String, Integer>> countWords(List<String> lst) {
+    private Stream<Pair<String, Integer>> countWordsFrequency(List<String> lst) {
         Stream<Stream<Pair<String, Integer>>> m = lst.stream().map((String s) -> {
-            return new Scanner(s).tokens()
-                    .map(str -> str.toLowerCase().replaceAll("[^a-zA-Z0-9]", ""))
+            return Arrays.stream(s.split(" "))
+                    .map(str -> str.toLowerCase() //make all strings lower case
+                            .replaceFirst("^[^a-zA-Z0-9-]+", "") // remove leading punctuation
+                            .replaceAll("[^a-zA-Z]+$", "")) //remove trailing punctuation
                     .collect(Collectors.groupingBy(Function.identity(), Collectors.summingInt(e -> 1)))
                     .entrySet()
                     .stream()
@@ -47,7 +49,7 @@ public class WordCount extends MapReduce<Pair<String, List<String>>, Pair<String
     @Override
     protected Stream<Pair<String, Integer>> map(Stream<Pair<String, List<String>>> in) {
         return in.map(i -> i.getValue())
-                .flatMap(l -> countWords(l))
+                .flatMap(l -> countWordsFrequency(l))
                 .filter(e -> e.getKey().length() > 3);
                 
 
