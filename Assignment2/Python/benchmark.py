@@ -46,7 +46,7 @@ def benchmark(warmups=0, iter=1, verbose=False, csv_file=None):
                 with open(csv_file, "a") as f:
                     writer = csv.writer(f)
                     
-                    writer.writerow([threading.current_thread().getName(),,])
+                    writer.writerow([threading.current_thread().getName(),'',''])
                    
                     writer.writerow(['run num', 'is warmup', 'timing'])
                     for k, v in warm.items():
