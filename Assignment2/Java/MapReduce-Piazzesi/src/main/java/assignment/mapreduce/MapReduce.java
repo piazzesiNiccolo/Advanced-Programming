@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package assignment.framework.mapreduce.piazzesi;
+package assignment.mapreduce;
 
+import assignment.utils.Pair;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Comparator;
 import java.util.stream.Stream;
 
 /**

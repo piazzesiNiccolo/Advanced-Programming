@@ -1,4 +1,4 @@
-package assignment.framework.mapreduce.piazzesi;
+package assignment.utils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

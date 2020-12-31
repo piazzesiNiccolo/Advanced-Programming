@@ -1,20 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package assignment.framework.mapreduce.piazzesi;
+package assignment.wordcount;
 
+import assignment.mapreduce.MapReduce;
+import assignment.utils.Pair;
+import assignment.utils.Reader;
+import assignment.utils.Writer;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,24 +31,29 @@ public class WordCount extends MapReduce<Pair<String, List<String>>, Pair<String
     private Stream<Pair<String, Integer>> countWordsFrequency(List<String> lst) {
         Stream<Stream<Pair<String, Integer>>> m = lst.stream().map((String s) -> {
             return Arrays.stream(s.split(" "))
-                    .map(str -> str.toLowerCase() //make all strings lower case
-                            .replaceFirst("^[^a-zA-Z0-9-]+", "") // remove leading punctuation
-                            .replaceAll("[^a-zA-Z]+$", "")) //remove trailing punctuation
+                    .map(str -> str.toLowerCase() //make all words lower case
+                    .replaceAll("[^a-zA-Z0-9]", "") // remove  punctuation
+                    )
+                    .filter(str -> str.length() > 3)
                     .collect(Collectors.groupingBy(Function.identity(), Collectors.summingInt(e -> 1)))
                     .entrySet()
                     .stream()
                     .map(e -> new Pair<>(e.getKey(), e.getValue()));
         });
         return m.flatMap(Function.identity());
-                
+
     }
 
     @Override
     protected Stream<Pair<String, Integer>> map(Stream<Pair<String, List<String>>> in) {
         return in.map(i -> i.getValue())
-                .flatMap(l -> countWordsFrequency(l))
-                .filter(e -> e.getKey().length() > 3);
-                
+                .flatMap(l -> countWordsFrequency(l));
+
+    }
+
+    @Override
+    protected Stream<Pair<String, Integer>> compare(Stream<Pair<String, Integer>> s) {
+        return s.sorted(Comparator.comparing(Pair::getKey));
 
     }
 
@@ -70,13 +72,5 @@ public class WordCount extends MapReduce<Pair<String, List<String>>, Pair<String
     protected void write(File f, Stream<Pair<String, Integer>> r) throws FileNotFoundException {
         Writer.write(f, r);
     }
-
-    @Override
-    protected Stream<Pair<String, Integer>> compare(Stream<Pair<String, Integer>> s) {
-        return s.sorted(Comparator.comparing(Pair::getKey));
-
-    }
-
-    
 
 }

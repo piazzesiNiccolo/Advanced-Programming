@@ -1,4 +1,4 @@
-package assignment.framework.mapreduce.piazzesi;
+package assignment.utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;

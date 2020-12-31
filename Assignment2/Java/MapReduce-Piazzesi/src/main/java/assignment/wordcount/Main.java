@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package assignment.framework.mapreduce.piazzesi;
+package assignment.wordcount;
 
+import assignment.mapreduce.MapReduce;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
