@@ -45,16 +45,18 @@ def benchmark(warmups=0, iter=1, verbose=False, csv_file=None):
             if csv_file:
                 with open(csv_file, "a") as f:
                     writer = csv.writer(f)
+                    
+
                    
-                    writer.writerow(['run num', 'is warmup', 'timing','average','variance'])
+                    writer.writerow(['run num', 'is warmup', 'timing'])
                     for k, v in warm.items():
-                        writer.writerow([k, 'yes', v,'',''])
+                        writer.writerow([k, 'yes', v])
                     for k, v in invoke.items():
-                        writer.writerow([k+warmups, 'no', v,'',''])
-                    writer.writerow(['','','',avg,variance])
+                        writer.writerow([k+warmups, 'no', v])
                         
                     
-                   
+                    writer.writerow(['average', avg,''])
+                    writer.writerow(['variance', variance,''])
                    
             return result
         return wrapper
