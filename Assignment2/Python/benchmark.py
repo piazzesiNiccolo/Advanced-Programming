@@ -47,7 +47,8 @@ def benchmark(warmups=0, iter=1, verbose=False, csv_file=None):
                     writer = csv.writer(f)
                     
 
-                   
+                    writer.writerow(['THREAD:',threading.current_thread().getName(),''])
+                    writer.writerow(['','',''])
                     writer.writerow(['run num', 'is warmup', 'timing'])
                     for k, v in warm.items():
                         writer.writerow([k, 'yes', v])
@@ -57,7 +58,7 @@ def benchmark(warmups=0, iter=1, verbose=False, csv_file=None):
                     
                     writer.writerow(['average', avg,''])
                     writer.writerow(['variance', variance,''])
-                   
+                    writer.writerow(['','',''])
             return result
         return wrapper
     return decorator
@@ -87,7 +88,7 @@ def test():
         print("\n\nNUMBER OF THREADS:{}\n\n".format(it))
         fib = benchmark(iter=int(16/it),verbose=True,warmups=3, csv_file=files[i])
         fib = fib(fibonacci)
-        [threads.append(threading.Thread(target=fib,args=(10,),name='THREAD {}-{}'.format(it,j+1))) for j in range(it)]
+        [threads.append(threading.Thread(target=fib,args=(10,),name='{}-{}'.format(it,j+1))) for j in range(it)]
         [thread.start() for thread in threads]
         [thread.join() for thread in threads]
 
