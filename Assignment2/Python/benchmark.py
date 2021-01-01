@@ -4,6 +4,8 @@ import threading
 import time
 from functools import wraps
 
+lock = threading.Lock() ## i need this for printing things in the correct order on the standard output
+
 
 def _timeFunctionCalls(rounds, function, *args, **kwargs):
     results = dict()
@@ -25,7 +27,10 @@ def benchmark(warmups=0, iter=1, verbose=False, csv_file=None):
             if warmups != 0:
                 warm = _timeFunctionCalls(warmups, func, *args, **kwargs)
             invoke = _timeFunctionCalls(iter, func, *args, **kwargs)
+            # without the lock things were overlapping on the screen
+            lock.acquire()
             if verbose:
+                
                 print("{:<8} {:<15} {:<10}".format(
                     'run num', 'is warmup', 'time'))
                 
@@ -37,11 +42,12 @@ def benchmark(warmups=0, iter=1, verbose=False, csv_file=None):
 
             avg = sum(invoke.values()) / iter
             variance = sum((v - avg) ** 2 for v in invoke.values()) / iter
-            print("{:<8} {:<15}\
+            print("\n{:<8} {:<15}\
                     \n{:<8} {:<15}\n"\
                     .format('average time', avg,\
                             'variance',variance))
-
+            
+            lock.release()
             if csv_file:
                 with open(csv_file, "a") as f:
                     writer = csv.writer(f)
@@ -91,7 +97,18 @@ def test():
         [thread.start() for thread in threads]
         [thread.join() for thread in threads]
 
-    
+"""
+By executing the test function and comparing the results  we can see
+that increasing the number of threads does not bring any
+significant improvement in the run time. 
+
+This is caused by the Global Interpreter Lock.
+As we know only one thread at a time is allowed to run python bytecode and this siginificantly impact on the effects
+that multithreading usually has.
+
+The fibonacci function used as a test is CPU bound, so the GIL is not released until completion.
+
+"""
 
 
 if __name__ == "__main__":
