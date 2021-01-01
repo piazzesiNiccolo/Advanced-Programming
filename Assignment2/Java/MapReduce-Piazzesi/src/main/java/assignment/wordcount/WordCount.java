@@ -32,7 +32,7 @@ public class WordCount extends MapReduce<Pair<String, List<String>>, Pair<String
         Stream<Stream<Pair<String, Integer>>> m = lst.stream().map((String s) -> {
             return Arrays.stream(s.split(" "))
                     .map(str -> str.toLowerCase() //make all words lower case
-                    .replaceAll("[^a-zA-Z0-9]", "") // remove  punctuation
+                    .replaceAll("[^a-z0-9]", "") // remove  punctuation
                     )
                     .filter(str -> str.length() > 3)
                     .collect(Collectors.groupingBy(Function.identity(), Collectors.summingInt(e -> 1)))
