@@ -25,7 +25,7 @@ public class Main {
         try {
             MapReduce m = new WordCount();
             Path p = Path.of("Books/", args);
-            m.compute(p, new File("f.csv"));
+            m.compute(p, new File("wordCount.csv"));
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }

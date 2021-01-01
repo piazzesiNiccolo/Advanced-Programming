@@ -1,6 +1,8 @@
-/home/nicco/Scrivania/Advanced-Programming/Assignment2/Java/MapReduce-Piazzesi/src/main/java/assignment/framework/mapreduce/piazzesi/WordCount.java
-/home/nicco/Scrivania/Advanced-Programming/Assignment2/Java/MapReduce-Piazzesi/src/main/java/assignment/framework/mapreduce/piazzesi/Writer.java
-/home/nicco/Scrivania/Advanced-Programming/Assignment2/Java/MapReduce-Piazzesi/src/main/java/assignment/framework/mapreduce/piazzesi/Main.java
-/home/nicco/Scrivania/Advanced-Programming/Assignment2/Java/MapReduce-Piazzesi/src/main/java/assignment/framework/mapreduce/piazzesi/Pair.java
-/home/nicco/Scrivania/Advanced-Programming/Assignment2/Java/MapReduce-Piazzesi/src/main/java/assignment/framework/mapreduce/piazzesi/Reader.java
-/home/nicco/Scrivania/Advanced-Programming/Assignment2/Java/MapReduce-Piazzesi/src/main/java/assignment/framework/mapreduce/piazzesi/MapReduce.java
+/home/nicco/Scrivania/Advanced-Programming/Assignment2/Java/MapReduce-Piazzesi/src/main/java/assignment/invertedindex/Indexer.java
+/home/nicco/Scrivania/Advanced-Programming/Assignment2/Java/MapReduce-Piazzesi/src/main/java/assignment/utils/Writer.java
+/home/nicco/Scrivania/Advanced-Programming/Assignment2/Java/MapReduce-Piazzesi/src/main/java/assignment/utils/Pair.java
+/home/nicco/Scrivania/Advanced-Programming/Assignment2/Java/MapReduce-Piazzesi/src/main/java/assignment/invertedindex/Main.java
+/home/nicco/Scrivania/Advanced-Programming/Assignment2/Java/MapReduce-Piazzesi/src/main/java/assignment/utils/Reader.java
+/home/nicco/Scrivania/Advanced-Programming/Assignment2/Java/MapReduce-Piazzesi/src/main/java/assignment/mapreduce/MapReduce.java
+/home/nicco/Scrivania/Advanced-Programming/Assignment2/Java/MapReduce-Piazzesi/src/main/java/assignment/wordcount/WordCount.java
+/home/nicco/Scrivania/Advanced-Programming/Assignment2/Java/MapReduce-Piazzesi/src/main/java/assignment/wordcount/Main.java

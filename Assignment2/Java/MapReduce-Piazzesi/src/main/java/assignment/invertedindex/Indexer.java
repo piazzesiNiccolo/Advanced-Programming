@@ -34,22 +34,21 @@ public class Indexer extends MapReduce<Pair<String, List<String>>, Pair<String, 
     @Override
     protected Stream<Pair<String, List<Pair<String, Integer>>>> map(Stream<Pair<String, List<String>>> in) {
         return in.map(p -> numLines(p));
-                
-        
-        }
+
+    }
 
     private Pair<String, List<Pair<String, Integer>>> numLines(Pair<String, List<String>> p) {
-        
+
         String doc = p.getKey();
         List<Pair<String, Integer>> lines = new ArrayList<>();
         AtomicInteger i = new AtomicInteger();
         p.getValue().forEach((String l) -> {
             int curr = i.getAndIncrement();
             Arrays.stream(l.split(" "))
-                    .map(s->s.toLowerCase().replaceAll("[^a-z-9]", ""))
-                    .filter(s->s.length() > 3)
-                    .forEach(s -> lines.add(new Pair<>(s,curr)));
-                });
+                    .map(s -> s.toLowerCase().replaceAll("[^a-z0-9]", ""))
+                    .filter(s -> s.length() > 3)
+                    .forEach(s -> lines.add(new Pair<>(s, curr)));
+        });
         return new Pair<>(doc, lines);
 
     }
@@ -62,24 +61,25 @@ public class Indexer extends MapReduce<Pair<String, List<String>>, Pair<String, 
 
     @Override
     protected Stream<Pair<String, Pair<String, Integer>>> reduce(Stream<Pair<String, List<Pair<String, Integer>>>> in) {
+        
+        Comparator<Pair<String, Pair<String, Integer>>> c = (p1, p2) -> p1.getKey().compareTo(p2.getKey());
+        
+        c = c.thenComparing((p1, p2) -> p1.getValue().getKey().compareTo(p2.getValue().getKey()))
+            .thenComparing((p1, p2) -> p1.getValue().getValue().compareTo(p2.getValue().getValue()));
+        
         return in.flatMap(w -> w
-                .getValue()
-                .stream()
-                .map(x -> new Pair<>(x.getKey(), new Pair<>(w.getKey(), x.getValue())))
-                .sorted(Comparator.comparing(Pair::getKey))
-                .sorted((p1, p2) -> p1.getValue().getKey().compareTo(p2.getValue().getKey()))
-                .sorted((p1, p2) -> p1.getValue().getValue().compareTo(p2.getValue().getValue()))
-
-                
-        );
+                    .getValue()
+                    .stream()
+                    .map(x -> new Pair<>(x.getKey(), new Pair<>(w.getKey(), x.getValue())))
+                 )
+                .sorted(c);
     }
 
     @Override
     protected void write(File f, Stream<Pair<String, Pair<String, Integer>>> r) throws IOException {
-        PrintStream ps = new PrintStream(f);
-        r.forEach(p -> ps.println(p.getKey() + ", " + p.getValue().getKey() + ", "
-                + p.getValue().getValue()));
-        ps.close();
+        try (PrintStream ps = new PrintStream(f)) {
+            r.forEach(p -> ps.println(p.getKey() + ", " + p.getValue().getKey() + ", " + p.getValue().getValue()));
+        }
     }
 
 }
